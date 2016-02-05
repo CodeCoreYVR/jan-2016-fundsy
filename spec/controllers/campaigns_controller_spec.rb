@@ -44,10 +44,77 @@ RSpec.describe CampaignsController, type: :controller do
       end
     end
     context "with invalid attributes" do
-      it "doesn't create a record in the database"
-      it "renders the new template"
-      it "sets a flash alert message"
+      def invalid_request
+        post :create, campaign: {name: "some valid name",
+          description: "some valid description",
+          goal: 5
+        }
+      end
+      it "doesn't create a record in the database" do
+        campaign_count_before = Campaign.count
+        invalid_request
+        campaign_count_after = Campaign.count
+        expect(campaign_count_before).to eq(campaign_count_after)
+      end
+
+      it "renders the new template" do
+        invalid_request
+        expect(response).to render_template(:new)
+      end
+
+      it "sets a flash alert message" do
+        invalid_request
+        expect(flash[:alert]).to be
+      end
     end
+  end
+
+  describe "#show" do
+    before do
+      # GIVEN:
+      @campaign = Campaign.create({name: "valid name",
+        description: "valid description",
+        goal: 100000})
+      # WHEN:
+      get :show, id: @campaign.id
+    end
+
+    it "finds the object by its id and sets to to @campaign variable" do
+      # THEN:
+      expect(assigns(:campaign)).to eq(@campaign)
+    end
+
+    it "renders the show template" do
+      # THEN:
+      expect(response).to render_template(:show)
+    end
+
+    it "raises an error if the id passed doesn't match a record in the DB" do
+      expect { get :show, id: 2423424234324 }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+  end
+
+  describe "#index" do
+    it "renders the index template" do
+      get :index
+      expect(response).to render_template(:index)
+    end
+
+    it "fetches all records and assigns them to @campaigns" do
+      # GIVEN:
+      c  = FactoryGirl.create(:campaign)
+      c1 = FactoryGirl.create(:campaign)
+      # WHEN:
+      get :index
+      # THEN:
+      expect(assigns(:campaigns)).to eq([c, c1])
+    end
+  end
+
+  describe "#edit" do
+    it "renders the edit template"
+    it "finds the campaign by id and sets it to @campaign instance variable"
   end
 
 end
