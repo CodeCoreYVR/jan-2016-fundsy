@@ -164,9 +164,46 @@ RSpec.describe CampaignsController, type: :controller do
       end
     end
     context "with invalid attributes" do
-      it "doesn't update the record"
-      it "renders the edit template"
-      it "sets a flash alert message"
+      it "doesn't update the record" do
+        goal_before = campaign.goal
+        patch :update, id: campaign.id, campaign: {goal: 6}
+        expect(campaign.reload.goal).to eq(goal_before)
+      end
+
+      it "renders the edit template" do
+        patch :update, id: campaign.id, campaign: {goal: 6}
+        expect(response).to render_template(:edit)
+      end
+
+      it "sets a flash alert message" do
+        patch :update, id: campaign.id, campaign: {goal: 6}
+        expect(flash[:alert]).to be
+      end
+    end
+  end
+
+  describe "#destroy" do
+    # let!(:campaign) { FactoryGirl.create(:campaign) }
+
+    it "removes the campaign from the database" do
+      # campaign
+      # expect { delete :destroy, id: campaign.id }.to change { Campaign.count }.by(-1)
+
+      campaign # will will create the campaign
+      count_before = Campaign.count
+      delete :destroy, id: campaign.id
+      count_after = Campaign.count
+      expect(count_before - count_after).to eq(1)
+    end
+
+    it "redirects to the campaign index page" do
+      delete :destroy, id: campaign.id
+      expect(response).to redirect_to(campaigns_path)
+    end
+
+    it "Sets a flash message" do
+      delete :destroy, id: campaign.id
+      expect(flash[:notice]).to be
     end
   end
 
