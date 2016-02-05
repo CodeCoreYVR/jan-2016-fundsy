@@ -1,6 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe CampaignsController, type: :controller do
+
+  let(:campaign) { FactoryGirl.create(:campaign) }
+  # def campaign
+  #   @campaign ||= FactoryGirl.create(:campaign)
+  # end
+
   describe "#new" do
     it "renders the new template" do
       # This mimics sending a get request to the new action
@@ -113,8 +119,55 @@ RSpec.describe CampaignsController, type: :controller do
   end
 
   describe "#edit" do
-    it "renders the edit template"
-    it "finds the campaign by id and sets it to @campaign instance variable"
+    before do
+      get :edit, id: campaign
+    end
+
+    it "renders the edit template" do
+      expect(response).to render_template(:edit)
+    end
+
+    it "finds the campaign by id and sets it to @campaign instance variable" do
+      expect(assigns(:campaign)).to eq(campaign)
+    end
+  end
+
+  describe "#update" do
+    context "with valid attributes" do
+      before do
+        # GIVEN:
+        # We need to have a campaign created in the DB.
+        # We can make use of the `campaign` variable we defined using `let`
+        # at the top
+
+        # WHEN:
+        patch :update, id: campaign.id, campaign: {name: "new valid name"}
+      end
+
+      it "updates the records with new parameter(s)" do
+        # THEN:
+        # We must use campaign.reload in this scenario because the controller
+        # will instantiate another campaign object based on the id but it will
+        # live in another memory location. Which means `campaign` here will still
+        # have the old data not the possibly updated one. Reload will make
+        # ActiveRecord rerun the query and fetches the information from the DB
+        # again.
+        expect(campaign.reload.name).to eq("new valid name")
+      end
+
+      it "redirects to the campaign show page" do
+        expect(response).to redirect_to(campaign_path(campaign))
+      end
+
+      it "sets a flash notice message" do
+        expect(flash[:notice]).to be
+      end
+    end
+    context "with invalid attributes" do
+      it "doesn't update the record"
+      it "renders the edit template"
+      it "sets a flash alert message"
+    end
   end
 
 end
