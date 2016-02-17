@@ -1,7 +1,8 @@
 Rails.application.routes.draw do
 
-  resources :pledges
-  resources :campaigns, only: [:new, :create, :show, :index, :edit, :update, :destroy]
+  resources :campaigns do
+    resources :pledges, only: [:create, :destroy]
+  end
 
   resources :users, only: [:new, :create]
 
