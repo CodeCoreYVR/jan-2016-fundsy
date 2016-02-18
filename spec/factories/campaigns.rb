@@ -3,6 +3,8 @@
 # validation errors.
 FactoryGirl.define do
   factory :campaign do
+    association :user, factory: :user
+
     # You put the attribute you want to assign as a variable / method (such as name)
     # then you put the value that you want the factory to assign to that attribute
     # if you give the value without a block, it's going to be the same for all

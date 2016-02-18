@@ -4,6 +4,7 @@ class User < ActiveRecord::Base
   validates :first_name, presence: true
   validates :email, presence: true, uniqueness: true
 
+  has_many :campaigns, dependent: :nullify
   has_many :pledges, dependent: :destroy
 
   def full_name

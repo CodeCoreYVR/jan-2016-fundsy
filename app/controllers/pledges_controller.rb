@@ -10,6 +10,13 @@ class PledgesController < ApplicationController
     render nothing: true
   end
 
+  def destroy
+    pledge   = current_user.pledges.find params[:id]
+    campaign = Campaign.find params[:campaign_id]
+    pledge.destroy
+    redirect_to campaign
+  end
+
   private
 
   def pledge_params

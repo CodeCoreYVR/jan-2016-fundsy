@@ -3,6 +3,8 @@ require 'rails_helper'
 RSpec.describe PledgesController, type: :controller do
   let(:user)     { FactoryGirl.create(:user) }
   let(:campaign) { FactoryGirl.create(:campaign) }
+  let(:pledge)   { FactoryGirl.create(:pledge, {campaign: campaign, user: user})}
+  let(:pledge_1) { FactoryGirl.create(:pledge) }
 
   describe "#create" do
     context "with no signed in user" do
@@ -44,5 +46,37 @@ RSpec.describe PledgesController, type: :controller do
     end
   end
 
+  describe "#destroy" do
+    context "with no signed in user" do
+      it "redirects to the sign in page" do
+        delete :destroy, id: pledge.id, campaign_id: campaign.id
+        expect(response).to redirect_to new_session_path
+      end
+    end
+    context "with signed in user" do
+      before { signin(user) }
+
+      context "with signed in user as the owner of the pledge" do
+        it "removes the pledge from the database" do
+          pledge # to force create the pledge before we get the count
+          count_before = Pledge.count
+          delete :destroy, campaign_id: campaign.id, id: pledge.id
+          count_after  = Pledge.count
+          expect(count_after - count_before).to eq(-1)
+        end
+        it "redirects to campaign show page" do
+          delete :destroy, campaign_id: campaign.id, id: pledge.id
+          expect(response).to redirect_to(campaign_path(campaign))
+        end
+      end
+      context "with signed in user as not the owner of the pledge" do
+        it "raises an error" do
+          expect do
+            delete :destroy, id: pledge_1.id, campaign_id: pledge_1.campaign_id
+          end.to raise_error(ActiveRecord::RecordNotFound)
+        end
+      end
+    end
+  end
 
 end
