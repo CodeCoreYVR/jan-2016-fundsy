@@ -1,5 +1,6 @@
 class CampaignsController < ApplicationController
-  before_action :find_question, only: [:show, :edit, :update, :destroy]
+  before_action :authenticate_user, only: [:destroy]
+  before_action :find_campaign, only: [:show, :edit, :update]
 
   def new
     @campaign = Campaign.new
@@ -37,7 +38,7 @@ class CampaignsController < ApplicationController
   end
 
   def destroy
-    @campaign.destroy
+    user_campaign.destroy
     redirect_to campaigns_path, notice: "Campaign deleted!"
   end
 
@@ -47,7 +48,11 @@ class CampaignsController < ApplicationController
     params.require(:campaign).permit(:name, :goal, :description, :end_date)
   end
 
-  def find_question
+  def find_campaign
     @campaign = Campaign.find params[:id]
+  end
+
+  def user_campaign
+    @user_campaign ||= current_user.campaigns.find params[:id]
   end
 end

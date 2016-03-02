@@ -2,7 +2,9 @@ require 'rails_helper'
 
 RSpec.describe CampaignsController, type: :controller do
 
-  let(:campaign) { FactoryGirl.create(:campaign) }
+  let(:user)       { FactoryGirl.create(:user)}
+  let(:campaign)   { FactoryGirl.create(:campaign, {user: user}) }
+  let(:campaign_1) { FactoryGirl.create(:campaign) }
   # def campaign
   #   @campaign ||= FactoryGirl.create(:campaign)
   # end
@@ -184,26 +186,45 @@ RSpec.describe CampaignsController, type: :controller do
 
   describe "#destroy" do
     # let!(:campaign) { FactoryGirl.create(:campaign) }
-
-    it "removes the campaign from the database" do
-      # campaign
-      # expect { delete :destroy, id: campaign.id }.to change { Campaign.count }.by(-1)
-
-      campaign # will will create the campaign
-      count_before = Campaign.count
-      delete :destroy, id: campaign.id
-      count_after = Campaign.count
-      expect(count_before - count_after).to eq(1)
+    context "with no user signed in" do
+      it "redirects to the sign in page" do
+        delete :destroy, id: campaign_1.id
+        expect(response).to redirect_to(new_session_path)
+      end
     end
 
-    it "redirects to the campaign index page" do
-      delete :destroy, id: campaign.id
-      expect(response).to redirect_to(campaigns_path)
-    end
+    context "with user signed in" do
+      before { signin(user) }
+      context "with user owning the campaign" do
+        it "removes the campaign from the database" do
+          # campaign
+          # expect { delete :destroy, id: campaign.id }.to change { Campaign.count }.by(-1)
 
-    it "Sets a flash message" do
-      delete :destroy, id: campaign.id
-      expect(flash[:notice]).to be
+          campaign # will will create the campaign
+          count_before = Campaign.count
+          delete :destroy, id: campaign.id
+          count_after = Campaign.count
+          expect(count_before - count_after).to eq(1)
+        end
+
+        it "redirects to the campaign index page" do
+          delete :destroy, id: campaign.id
+          expect(response).to redirect_to(campaigns_path)
+        end
+
+        it "Sets a flash message" do
+          delete :destroy, id: campaign.id
+          expect(flash[:notice]).to be
+        end
+      end
+
+      context "with user that doesn't own the campaign" do
+        it "raises an error" do
+          expect do
+            delete :destroy, id: campaign_1.id
+          end.to raise_error(ActiveRecord::RecordNotFound)
+        end
+      end
     end
   end
 
