@@ -158,7 +158,7 @@ RSpec.describe CampaignsController, type: :controller do
       end
 
       it "redirects to the campaign show page" do
-        expect(response).to redirect_to(campaign_path(campaign))
+        expect(response).to redirect_to(campaign_path(campaign.reload))
       end
 
       it "sets a flash notice message" do

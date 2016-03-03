@@ -63,6 +63,6 @@ class CampaignsController < ApplicationController
   end
 
   def user_campaign
-    @user_campaign ||= current_user.campaigns.find params[:id]
+    @user_campaign ||= current_user.campaigns.friendly.find params[:id]
   end
 end
