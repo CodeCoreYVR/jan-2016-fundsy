@@ -2,5 +2,7 @@
 
 <h2>All Campaigns</h2>
 <% @campaigns.each do |c| %>
-  <%= link_to c.name.upcase, c %>
+  <div class="well">
+    <%= link_to c.name.upcase, c %>
+  </div>
 <% end %>

@@ -7,15 +7,11 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
-<% if user_logged_in? %>
-  <%= current_user.full_name %>
-<% else %>
-  <%= link_to "Sign Up", new_user_path %>
-<% end %>
 
-<%= notice || alert %>
-
-<%= yield %>
+<div class="container">
+  <%= render "/layouts/header" %>
+  <%= yield %>
+</div>
 
 </body>
 </html>

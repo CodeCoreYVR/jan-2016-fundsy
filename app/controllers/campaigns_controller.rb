@@ -11,8 +11,10 @@ class CampaignsController < ApplicationController
   end
 
   def create
-    @campaign = Campaign.create(campaign_params)
-    if @campaign.valid?
+    @campaign = Campaign.new(campaign_params)
+    @campaign.user = current_user
+
+    if @campaign.save
       flash[:notice] = "Campaign created!"
       redirect_to campaign_path(@campaign)
     else
@@ -33,6 +35,10 @@ class CampaignsController < ApplicationController
   end
 
   def update
+    # we need to force the slug to be nil before updating it in order to have
+    # FriendlyId generate a new slug for us. We're using `history` option with
+    # FriendlyId so old urls will still work.
+    @campaign.slug = nil
     if @campaign.update campaign_params
       redirect_to campaign_path(@campaign), notice: "Campaign updated!"
     else
@@ -53,7 +59,7 @@ class CampaignsController < ApplicationController
   end
 
   def find_campaign
-    @campaign = Campaign.find params[:id]
+    @campaign = Campaign.friendly.find params[:id]
   end
 
   def user_campaign
