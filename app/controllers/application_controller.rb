@@ -6,10 +6,12 @@ class ApplicationController < ActionController::Base
   def current_user
     @current_user ||= User.find session[:user_id] if user_logged_in?
   end
+  helper_method :current_user
 
   def user_logged_in?
     session[:user_id].present?
   end
+  helper_method :user_logged_in?
 
   def authenticate_user
     redirect_to new_session_path unless session[:user_id]

@@ -25,6 +25,8 @@ RSpec.feature "Campaigns", type: :feature do
     it "displays a campaign's name" do
       campaign = FactoryGirl.create(:campaign)
       visit campaigns_path
+      # This will open a web page with the current state
+      # save_and_open_page
       expect(page).to have_text /#{campaign.name}/i
     end
 

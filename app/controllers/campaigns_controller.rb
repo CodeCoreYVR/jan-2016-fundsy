@@ -6,6 +6,10 @@ class CampaignsController < ApplicationController
     @campaign = Campaign.new
   end
 
+  def hello
+
+  end
+
   def create
     @campaign = Campaign.create(campaign_params)
     if @campaign.valid?
