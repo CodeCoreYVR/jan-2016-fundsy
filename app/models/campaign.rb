@@ -11,6 +11,11 @@ class Campaign < ActiveRecord::Base
   belongs_to :user
   has_many :pledges, dependent: :destroy
 
+  # This is CarrierWave config:
+  # :image is the field in the database that will store the image name
+  # ImageUploader is the uplaoder class we created in /app/uploaders/image_uploader.rb
+  mount_uploader :image, ImageUploader
+
   # default `to_param` method
   # def to_param
   #   id

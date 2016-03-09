@@ -29,6 +29,10 @@ gem 'bcrypt', '~> 3.1.7'
 gem "bootstrap-sass"
 gem 'simple_form'
 gem 'friendly_id'
+gem 'quiet_assets'
+gem 'carrierwave'
+gem "fog"
+gem 'mini_magick'
 
 # Use Unicorn as the app server
 # gem 'unicorn'
