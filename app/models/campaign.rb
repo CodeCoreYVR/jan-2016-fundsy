@@ -11,6 +11,18 @@ class Campaign < ActiveRecord::Base
   belongs_to :user
   has_many :pledges, dependent: :destroy
 
+  has_many :rewards, dependent: :destroy
+
+  # this enables us to create associated rewards models at the same time we're
+  # creating the campaign model.
+  # reject_if: :all_blank means that if the user leaves all the fields for the
+  #                       reward empty, it will be ignored and not passed to the
+  #                       validation
+  # allow_destroy: true   means that if you pass in a special attributes _destroy
+  #                       with value `true` as part of the `reward` params it
+  #                       will delete the reward record all together.
+  accepts_nested_attributes_for :rewards, reject_if: :all_blank, allow_destroy: true
+
   # This is CarrierWave config:
   # :image is the field in the database that will store the image name
   # ImageUploader is the uplaoder class we created in /app/uploaders/image_uploader.rb

@@ -2,12 +2,14 @@ class CampaignsController < ApplicationController
   before_action :authenticate_user, only: [:destroy]
   before_action :find_campaign, only: [:show, :edit, :update]
 
+  REWARD_COUNT = 3
+
   def new
     @campaign = Campaign.new
+    build_associated_rewards
   end
 
   def hello
-
   end
 
   def create
@@ -18,6 +20,7 @@ class CampaignsController < ApplicationController
       flash[:notice] = "Campaign created!"
       redirect_to campaign_path(@campaign)
     else
+      build_associated_rewards
       flash[:alert] = "Campaign not created!"
       render :new
     end
@@ -32,6 +35,7 @@ class CampaignsController < ApplicationController
   end
 
   def edit
+    build_associated_rewards
   end
 
   def update
@@ -54,8 +58,14 @@ class CampaignsController < ApplicationController
 
   private
 
+  def build_associated_rewards
+    number_to_build = REWARD_COUNT - @campaign.rewards.size
+    number_to_build.times { @campaign.rewards.build }
+  end
+
   def campaign_params
-    params.require(:campaign).permit(:name, :goal, :description, :end_date, :image)
+    params.require(:campaign).permit(:name, :goal, :description, :end_date,
+                                      :image, {rewards_attributes: [:amount, :title, :id, :_destroy]})
   end
 
   def find_campaign
