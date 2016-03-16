@@ -36,6 +36,8 @@ gem 'mini_magick'
 
 gem "cocoon"
 
+gem "aasm"
+
 # Use Unicorn as the app server
 # gem 'unicorn'
 

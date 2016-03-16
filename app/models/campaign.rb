@@ -13,6 +13,39 @@ class Campaign < ActiveRecord::Base
 
   has_many :rewards, dependent: :destroy
 
+  include AASM
+
+  # setting the whiny_transitions: false option makes it so that it won't
+  # throw an exception when an invalid transition happen
+  aasm whiny_transitions: false do
+    state :draft, initial: true
+    state :published
+    state :unfunded
+    state :funded
+    state :canceled
+
+    event :publish do
+      transitions from: :draft, to: :published
+    end
+
+    event :cancel do
+      transitions from: [:draft, :published, :funded], to: :canceled
+    end
+
+    event :fund do
+      transitions from: :published, to: :funded
+    end
+
+    event :unfund do
+      transitions from: :published, to: :unfunded
+    end
+
+  end
+
+  def published
+    where(aasm_state: :published)
+  end
+
   # this enables us to create associated rewards models at the same time we're
   # creating the campaign model.
   # reject_if: :all_blank means that if the user leaves all the fields for the
