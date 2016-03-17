@@ -6,6 +6,9 @@ class User < ActiveRecord::Base
 
   has_many :campaigns, dependent: :nullify
   has_many :pledges, dependent: :destroy
+  
+  geocoded_by :address
+  after_validation :geocode
 
   def full_name
     "#{first_name} #{last_name}".strip.titleize
