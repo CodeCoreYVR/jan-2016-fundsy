@@ -13,6 +13,8 @@ class Campaign < ActiveRecord::Base
 
   has_many :rewards, dependent: :destroy
 
+  has_many :comments, as: :commentable
+
   include AASM
 
   geocoded_by :address

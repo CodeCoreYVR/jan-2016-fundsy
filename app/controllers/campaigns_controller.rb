@@ -28,6 +28,7 @@ class CampaignsController < ApplicationController
 
   def show
     # render :show
+    @comment = Comment.new
   end
 
   def index

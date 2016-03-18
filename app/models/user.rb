@@ -6,7 +6,9 @@ class User < ActiveRecord::Base
 
   has_many :campaigns, dependent: :nullify
   has_many :pledges, dependent: :destroy
-  
+
+  has_many :comments, as: :commentable
+
   geocoded_by :address
   after_validation :geocode
 
