@@ -7,6 +7,7 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
 # user = User.all
+
 100.times do
   c = FactoryGirl.create(:campaign)
   10.times { c.pledges.create(amount: rand(10000)) }

@@ -41,6 +41,8 @@ gem 'carrierwave'
 gem "fog"
 gem 'mini_magick'
 
+gem 'draper'
+
 gem "cocoon"
 
 gem "aasm"

@@ -1,0 +1,2 @@
+ENV['aws_access_key_id']     = 'AMAZON KEY HERE'
+ENV['aws_secret_access_key'] = 'AMAZON SECRET HERE'

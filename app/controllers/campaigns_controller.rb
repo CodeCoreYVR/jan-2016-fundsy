@@ -70,7 +70,7 @@ class CampaignsController < ApplicationController
   end
 
   def find_campaign
-    @campaign = Campaign.friendly.find params[:id]
+    @campaign = Campaign.friendly.find(params[:id]).decorate
   end
 
   def user_campaign
