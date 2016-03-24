@@ -7,7 +7,7 @@ class PledgesController < ApplicationController
     @pledge.campaign = @campaign
     @pledge.user     = current_user
     @pledge.save
-    render nothing: true
+    redirect_to new_pledge_payment_path(@pledge), notice: "Thanks for pledging!"
   end
 
   def destroy

@@ -47,6 +47,12 @@
   </div>
 <% end %>
 <hr>
+<h2>Pledge</h2>
+<%= simple_form_for [@campaign, @pledge] do |f| %>
+  <%= f.input :amount %>
+  <%= f.submit class: "btn btn-primary" %>
+<% end %>
+<hr>
 
 <%= simple_form_for [@campaign, @comment] do |f| %>
   <%= f.input :body %>
