@@ -43,6 +43,8 @@ gem 'mini_magick'
 
 gem 'draper'
 
+gem "virtus"
+
 gem "cocoon"
 
 gem "aasm"

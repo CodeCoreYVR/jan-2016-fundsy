@@ -16,5 +16,7 @@ FactoryGirl.define do
     sequence(:description)   {|n| "#{Faker::Lorem.paragraph}-#{n}" }
     goal                     10000000
     end_date                 60.days.from_now
+    aasm_state               :draft
+    # address                  Faker::Address.full
   end
 end
