@@ -7,18 +7,34 @@ class Payments::HandlePayment
   attribute :pledge, Pledge
 
   def call
+    create_customer && charge_customer && update_pledge
+  end
+
+  private
+
+  def create_customer
     customer_service = Payments::Stripe::CreateCustomer.new(user: user,
-                                                           stripe_token: stripe_token)
+    stripe_token: stripe_token)
     customer_service.call
+  end
 
-    charge = Stripe::Charge.create(
-                amount:      pledge.amount * 100,
-                currency:    "cad",
-                customer:    user.stripe_customer_id,
-                description: "Charge for pledge id: #{pledge.id}"
-              )
+  def charge_customer
+    service = Payments::Stripe::ChargeCustomer.new(user:        user,
+                                                   description: description,
+                                                   amount:      amount)
+    @charge_id = service.charge_id if service.call
+  end
 
-    pledge.stripe_txn_id = charge.id
+  def description
+    "Charge for pledge id: #{pledge.id}"
+  end
+
+  def amount
+    pledge.amount * 100
+  end
+
+  def update_pledge
+    pledge.stripe_txn_id = @charge_id
     pledge.save
   end
 
